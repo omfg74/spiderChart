@@ -7,7 +7,7 @@ import android.view.View
 class SpiderChart(context: Context) : View(context) {
 
     private var arcStepDeg = 0f
-    private val startPositionDeg = -45f
+    private var startPositionDeg = -0f
     private val bigLineStep = 10.dp()
     private val dividerWidth = 1f
     private val weightCount = 10//need to setUp max weight
@@ -23,6 +23,7 @@ class SpiderChart(context: Context) : View(context) {
     fun setItems(items: ArrayList<SpiderItem>) {
         if (items.size > 8) return
         arcStepDeg = 360f / items.size
+        startPositionDeg = arcStepDeg
         this.items = items
     }
 
@@ -58,11 +59,8 @@ class SpiderChart(context: Context) : View(context) {
             x2 = dotArray?.get(count + 1)?.first ?: return
             y2 = dotArray?.get(count + 1)?.second ?: return
         }
-
-//        canvas?.drawLine(x1, y1, x2, y2, paintTextLines)
         textPath.moveTo(x1, y1)
         textPath.lineTo(x2, y2)
-//        canvas?.drawPath(textPath, paintTextLines)
         paintText.setTextSize(20.fdp())
         paintText.color = Color.GREEN
         paintText.style = Paint.Style.FILL
@@ -76,11 +74,6 @@ class SpiderChart(context: Context) : View(context) {
             0f,
             paintText
         )
-//        canvas?.drawRect(rectF, paintMain)
-//        canvas?.drawTextOnPath()
-
-//        textPath.addRect()
-
     }
 
 
@@ -100,7 +93,7 @@ class SpiderChart(context: Context) : View(context) {
         val mY = height / 2f
         paintStraightLines.color = Color.BLACK
         paintStraightLines.strokeWidth = dividerWidth
-        val rad = ((bigLineStep) * (weightCount - 2))
+        val rad = ((bigLineStep) * (8))
         val cos = Math.cos(Math.toRadians(count * arcStepDeg.toDouble()))
         val sin = Math.sin(Math.toRadians(count * arcStepDeg.toDouble()))
         val x1 = (mX + (rad * cos) - (rad * sin)).toFloat()
@@ -122,9 +115,7 @@ class SpiderChart(context: Context) : View(context) {
         if ((item?.weight ?: 0) > 10) {
             item?.weight = 10
         }
-//        item?.weight = (item?.weight ?: 0) + 4.dp()
         paintMain.color = item?.color ?: Color.YELLOW
-//        paint.alpha = 100
         paintMain.style = Paint.Style.FILL_AND_STROKE
         val oval = RectF(
             (mX - (item?.weight?.times(bigLineStep) ?: 0)).toFloat(),
