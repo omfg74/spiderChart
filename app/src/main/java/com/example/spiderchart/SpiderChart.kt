@@ -37,11 +37,12 @@ class SpiderChart(context: Context) : View(context) {
             drawCircle(canvas, i)
         }
         for (i in 0 until (items?.size ?: 0)) {
-            drawLines(canvas, i)
+//            drawLines(canvas, i)
         }
         for (i in 0 until (items?.size ?: 0)) {
-            drawTextLine(canvas, i, items?.get(i))
+//            drawTextLine(canvas, i, items?.get(i))
         }
+        drawBorderCircle(canvas)
     }
 
     private fun drawTextLine(canvas: Canvas?, count: Int, item: SpiderItem?) {
@@ -87,6 +88,16 @@ class SpiderChart(context: Context) : View(context) {
         canvas?.drawCircle(mX, mY, radius, paintLines)
     }
 
+    private fun drawBorderCircle(canvas: Canvas?) {
+        val mX = width / 2f
+        val mY = height / 2f
+        val radius = (12 * (bigLineStep)).toFloat()
+        paintLines.style = Paint.Style.STROKE
+        paintLines.strokeWidth = dividerWidth
+        paintLines.color = Color.parseColor("#ff33b5e5")
+        canvas?.drawCircle(mX, mY, radius, paintLines)
+    }
+
 
     private fun drawLines(canvas: Canvas?, count: Int) {
         val mX = width / 2f
@@ -117,12 +128,39 @@ class SpiderChart(context: Context) : View(context) {
         }
         paintMain.color = item?.color ?: Color.YELLOW
         paintMain.style = Paint.Style.FILL_AND_STROKE
-        val oval = RectF(
+        var oval = RectF(
             (mX - (item?.weight?.times(bigLineStep) ?: 0)).toFloat(),
             (mY - (item?.weight?.times(bigLineStep) ?: 0)).toFloat(),
             (mX + (item?.weight?.times(bigLineStep) ?: 0)).toFloat(),
             (mY + (item?.weight?.times(bigLineStep) ?: 0)).toFloat()
         )
+
         canvas?.drawArc(oval, startPositionDeg + (count * arcStepDeg), arcStepDeg, true, paintMain)
+        oval = RectF(
+            (mX - (bigLineStep * 12 ?: 0)).toFloat(),
+            (mY - (bigLineStep * 12 ?: 0)).toFloat(),
+            (mX + (bigLineStep * 12 ?: 0)).toFloat(),
+            (mY + (bigLineStep * 12 ?: 0)).toFloat()
+        )
+        paintMain.color = item?.color ?: Color.BLACK
+        paintMain.style = Paint.Style.STROKE
+
+        val textPath  = Path()
+        textPath.addArc(oval,startPositionDeg + (count * arcStepDeg),arcStepDeg)
+        canvas?.drawArc(oval, startPositionDeg + (count * arcStepDeg), arcStepDeg, true, paintMain)
+
+        paintText.setTextSize(20.fdp())
+        paintText.color = Color.GREEN
+        paintText.style = Paint.Style.FILL
+        paintText.isAntiAlias = true
+        val measurePath = PathMeasure(textPath, false)
+        val measureText = paintText.measureText(item?.name ?: "")
+        canvas?.drawTextOnPath(
+            item?.name ?: "",
+            textPath,
+            ((measurePath.length / 2) - (measureText / 2)),
+            0f,
+            paintText
+        )
     }
 }
