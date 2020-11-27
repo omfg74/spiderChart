@@ -11,8 +11,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         mainLayout = findViewById(R.id.mainLayout)
-//        val thinCircle = ThinCircle(this)
-//        mainLayout?.addView(thinCircle)
         val item1 = SpiderItem("test1", 8)
         val item2 = SpiderItem("test2", 6)
         val item3 = SpiderItem("test3", 9)
